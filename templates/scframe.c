@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-char* shellcode = "\xSH\xEL\xCO\xDE";
+char* shellcode = "\xSH\xEL\xLC\xOD\xEE"; // SHELLCODE GOES HERE
 
 int main(void)
 {
