@@ -3,7 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 
-char* shellcode = "\xSH\xEL\xLC\xOD\xEE"; // SHELLCODE GOES HERE
+// using unsigned char[] instead of char* because the first one
+// gets stored in .data, while the second in .rodata. The second
+// case becomes a problem with shellcode that modifies itself.
+unsigned char shellcode[] = "\xSH\xEL\xLC\xOD\xEE"; // SHELLCODE GOES HERE
 
 int main(void)
 {
