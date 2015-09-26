@@ -1,11 +1,11 @@
 ; Shellcode testing frame written in pure Assembly
-; Author: Oleg Mitrofanov (reidre-roque) 2015
+; Author: Oleg Mitrofanov (reider-roque) 2015
 ;
 ; Remember to link with ld -z execstack!
 ;
 ; In gdb set breakpoint at scexec label, the call instruction after that
 ; label will jump execution to the shellcode. To dissassemble then use 
-; `disas $eip,+20`
+; something like `disas $eip,+20`
 ;
 
 section .data
