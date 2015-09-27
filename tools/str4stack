@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-# Tool for converting string to instructions for pushing them to stack
+# Tool for converting string to instructions for pushing them to stack.
+# Script works with both Python 2 and 3.
 #
 # Author: Oleg Mitrofanov (reider-roque) 2015
 
@@ -25,4 +26,4 @@ strvar = strvar[::-1]   # reverse string
 strchunks = [strvar[i:i+4] for i in range(0, len(strvar), 4)] 
 for chunk in strchunks:
     chunk = binascii.hexlify(chunk.encode()) # convert letters to byte codes
-    print("push 0x{}".format(chunk.decode('utf-8')))
+    print("push 0x{}".format(chunk.decode('utf-8'))) # decode(..) is needed for Python 3
