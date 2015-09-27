@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+
+# Tool for xoring shellcode with a given key (can be one or multiple bytes).
+# Script works with both Python 2 and 3.
+#
+# Author: Oleg Mitrofanov (reider-roque) 2015
+
+from itertools import cycle
+import os.path
+import sys
+
+def hexlify(data): 
+    return "".join("\\x{:02x}".format(ord(c)) for c in data)
+
+def hexlify_nasm(data): 
+    return "".join("0x{:02x},".format(ord(c)) for c in data)[:-1]
+
+def unhexlify(data):
+    return "".join([chr(int(num, 16)) for num in data[2:].split("\\x")])
+    
+
+script_name = os.path.basename(__file__)
+if len(sys.argv) != 3:
+    print("Error: invalid number of arguments")
+    print("Usage:\n\t{} KEY STRING".format(script_name)) 
+    print("Example:\n\t{} '\\x99' '\\aa\\bb\cc\dd'".format(script_name))
+    sys.exit(1)
+
+key = sys.argv[1]
+cleartext = sys.argv[2]
+
+encrypted = ''.join(chr(ord(c)^ord(k)) for c,k 
+    in zip(unhexlify(cleartext), cycle(unhexlify(key))))
+print('ENCRYPTED OUTPUT:')
+print('Standard:  {}'.format(hexlify(encrypted)))
+print('NASM:      {}'.format(hexlify_nasm(encrypted)))
