@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+# Tool for building binaries containing the supplied
+# shellcode for testing purposes 
+#
+# Author: Oleg Mitrofanov (reider-roque) 2015
+
+SCRIPT_NAME=$(basename $0)
+FILE="a.out"
+
+##### HELPER FUNCTIONS BEGIN #####
+
+function show_help {
+cat <<EOF
+Usage: $SCRIPT_NAME [options] SHELLCODE 
+
+Build a Linux binary containing SHELLCODE for testing
+purposes.
+
+Positional arguments:
+  SHELLCODE    Shellcode to embed into binary 
+
+Optional arugments:
+  -f FILE, --file FILE
+                Specify output binary file name
+  -g, --gdb     Start shellcode debugging in GDB
+  -h, --help    This message
+
+Example:
+  ./sc2bin -f test "\x31\xc0\xb0\x01\x31\xdb\xcd\x80"
+
+EOF
+}
+
+##### HELPER FUNCTIONS END #####
+
+##### PARSE ARGUMENTS BEGIN #####
+
+while [[ $# > 0 ]]
+do
+    key="$1"
+    
+    case $key in
+        -f|--file)
+            # Convert to lower case
+            FILE=$(echo "$2" | tr "[:upper:]" "[:lower:]")
+            shift
+        ;;
+        -g|--gdb)
+            GDB="true"
+        ;;
+        -h|--help)
+            show_help
+            exit 0 
+        ;;
+        -*) # Unknown option
+            printf "Error: option \`$key\` is not known.\n"
+            printf "Use \`$SCRIPT_NAME --help\` for more information.\n"
+            exit 1
+        ;;
+        *) # The last argument is the shellcode
+            break
+    esac
+    shift
+done
+
+# Check if we have exactly one argument left 
+if [ $# -ne 1 ]; then
+    printf "Error: the last argument must be a shellcode string.\n"
+    printf "Use \`$SCRIPT_NAME --help\` for more information.\n"
+    exit 1
+fi
+
+SHELLCODE=$1
+
+##### PARSE ARGUMENTS END #####
+
+
+cat > "$FILE.c" <<EOF
+#include <stdio.h>
+
+unsigned char shellcode[] = "$SHELLCODE";
+
+int main(void)
+{
+    (*(void(*)(void))shellcode)();
+    return 0;
+}
+EOF
+
+gcc -fno-stack-protector -z execstack -o $FILE "$FILE.c"
+rm -rf "$FILE.c"
+
+if [ "$GDB" != "true" ]; then
+    exit 0
+fi
+
+# Start GDB debugging
+ADDRESS=$(objdump -d -M intel test | sed -n '/<main>/,/^$/ p' | egrep "call\s*eax" | cut -d: -f1 | tr -d " ") 
+GDB_COMMANDS_FILE=$(mktemp)
+printf "b *0x$ADDRESS\nr\n" > $GDB_COMMANDS_FILE
+gdb -x "$GDB_COMMANDS_FILE" "$FILE"
+rm -rf "$GDB_COMMANDS_FILE"

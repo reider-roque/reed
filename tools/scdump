@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Tool for dumping shellcode string from instructions of the
 # .text (code) section of the given binary 
+#
 # Author: Oleg Mitrofanov (reider-roque) 2015
 
 shellcode=$(

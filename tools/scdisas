@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Tool for disassembling shellcode string
+#
+# Author: Oleg Mitrofanov (reider-roque) 2015
+
+tmpfile=$(mktemp)
+printf "$1" > "$tmpfile"
+ndisasm -b32 "$tmpfile"
+rm -rf "$tmpfile" 
