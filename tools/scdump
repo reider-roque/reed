@@ -16,4 +16,4 @@ shellcode=$(
 )
 
 echo "Length:  $(printf $shellcode | wc -c)"
-echo "Payload: \"$shellcode\""
+echo "Shellcode: \"$shellcode\""

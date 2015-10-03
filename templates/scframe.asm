@@ -12,7 +12,7 @@ section .data
     shellcode_ascii: db "\xSH\xEL\xLC\xOD\xEE" ; SHELLCODE GOES HERE
     shellcode_len:   equ $-shellcode_ascii
 
-    len_err_msg: db "Error: Shellcode shellcode_len must be a multiple of 4 (it wasn't).", 10
+    len_err_msg: db "Error: Shellcode length must be a multiple of 4 (it wasn't).", 10
     len_err_len: equ $-len_err_msg
     dig_err_msg: db "Error: The following symbol is not valid hexadecimal digit: "
     dig_err_len: equ $-dig_err_msg
