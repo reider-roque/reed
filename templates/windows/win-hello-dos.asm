@@ -16,7 +16,7 @@ section data
 section text
 
 ..start:
-    mov ax, data     ; Have data segment poin to the data section
+    mov ax, data     ; Have data segment point to the data section
     mov ds, ax
     mov dx, message  ; Load message address into dx
     mov ah, 9        ; Write string to stdout function #
