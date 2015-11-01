@@ -2,13 +2,30 @@
 ; nasm.exe
 ;
 ; Link with ld against static kernel32.lib (Windows SDK must be installed):
+;
 ; nasm -f win32 hello.nasm && ^ 
 ; ld hello.obj -L"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Lib" ^
 ;     -lkernel32 -o hello.exe
-
+;
+;
 ; Link with ld against kernel32.dll (Windows x64):
-; nasm -f win32 hello2.nasm && ^
-; ld hello2.obj -L"C:\Windows\SysWOW64" -lkernel32 -o hello2.exe
+; Note that in this case you'll have to remove all @## prefixes from function
+; names!
+;
+; nasm -f win32 hello.nasm && ^
+; ld hello.obj -L"C:\Windows\SysWOW64" -lkernel32 -o hello.exe
+;
+;
+; Link with golink:
+;
+; nasm -f win32 hello.nasm && ^
+; golink /console /entry _start hello.obj kernel32.dll
+;
+;
+; Link with link (MS linker):
+;
+; link /entry:start /subsystem:console hello.obj kernel32.lib
+;
 
 
 ;Constants
