@@ -23,6 +23,8 @@
 ;
 ;
 ; Link with link (MS linker):
+; Note that though the entry point is actually named _start it should be
+; used without the leading underscore as an argument to the /entry flag
 ;
 ; link /entry:start /subsystem:console hello.obj kernel32.lib
 ;
