@@ -4,7 +4,12 @@
 #
 # Author: Oleg Mitrofanov (reider-roque) 2015
 
-tmpfile=$(mktemp)
-printf "$1" > "$tmpfile"
-ndisasm -b32 "$tmpfile"
-rm -rf "$tmpfile" 
+printf "$1" | ndisasm -b32 -
+
+# Old inefficient way =)
+#
+# tmpfile=$(mktemp)
+# printf "$1" > "$tmpfile"
+# ndisasm -b32 "$tmpfile"
+# rm -rf "$tmpfile" 
+#
