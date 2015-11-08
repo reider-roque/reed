@@ -12,7 +12,7 @@ main:
     push esi
     push edi
     
-; Function body
+; Function body goes here
 
 ; Epilogue
     pop edi         ; Restore 'sacred' registers
