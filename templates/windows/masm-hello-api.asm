@@ -15,12 +15,14 @@ extrn GetStdHandle@4: PROC
 extrn WriteConsoleA@20: PROC
 extrn ExitProcess@4: PROC
 
-.const
+; Equates section
         STD_OUTPUT_HANDLE equ -11
 
-.data
+.const
         msg db "Hello world!", 0
         msglen equ sizeof msg
+
+.data?                      ; Uninitialized data
         tmpbuf dd ?
 
 .code
