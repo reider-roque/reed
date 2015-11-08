@@ -35,6 +35,6 @@ start:
         push eax            ; The stdout handle is in EAX
         call WriteConsoleA@20
 
-        push eax
+        push 0              ; Exit code
         call ExitProcess@4
 end start
