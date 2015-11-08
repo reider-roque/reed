@@ -96,7 +96,7 @@ if [ "$GDB" != "true" ]; then
 fi
 
 # Start GDB debugging
-ADDRESS=$(objdump -d -M intel test | sed -n '/<main>/,/^$/ p' | egrep "call\s*eax" | cut -d: -f1 | tr -d " ") 
+ADDRESS=$(objdump -d -M intel $FILE | sed -n '/<main>/,/^$/ p' | egrep "call\s*eax" | cut -d: -f1 | tr -d " ") 
 GDB_COMMANDS_FILE=$(mktemp)
 printf "b *0x$ADDRESS\nr\n" > $GDB_COMMANDS_FILE
 gdb -x "$GDB_COMMANDS_FILE" "$FILE"
