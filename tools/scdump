@@ -5,15 +5,20 @@
 #
 # Author: Oleg Mitrofanov (reider-roque) 2015
 
-shellcode=$(
+hex_shellcode=$(
     objdump -d "$1" |   # Dump the .text (code) section 
     grep '[0-9a-f]:' |  # Select only lines with memory addresses 
     cut -d$'\t' -f2 |   # Get the column with opcodes
     grep -v 'file' |    # Eliminate file format string for binaries with 
                         # names consisting of 0-9a-f chars
-    tr -d " \n" |       # Remove all spaces and newline chars
-    sed 's/../\\x&/g'   # Insert \x in front of every 2 chars
+    tr -d " \n"         # Remove all spaces and newline chars
 )
 
+x_hex_shellcode=$(
+    printf "$hex_shellcode" | 
+    sed 's/../\\x&/g'   # Insert \x in front of every 2 chars
+)   
+
 echo "Length:  $(printf $shellcode | wc -c)"
-echo "Shellcode: \"$shellcode\""
+echo "Shellcode(x-hex): \"$x_hex_shellcode\""
+echo "Shellcode(hex):   \"$hex_shellcode\""
