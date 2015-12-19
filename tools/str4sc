@@ -25,10 +25,10 @@ if len(sys.argv) != 2:
 
 strvar = sys.argv[1]
 
-print('Bin:    {}'.format(hexlify(strvar)))
+print('X-Hex:  {}'.format(hexlify(strvar)))
 print('NASM:   {}'.format(hexlify_nasm(strvar)))
 print('Hex:    {}'.format(binascii.hexlify(strvar.encode())))
-print('Stack:  ', end='')
+print('Stack saving insturctions:  ', end='')
 
 if len(strvar) % 4 != 0:
     print("Error: string length for stack must be a multiple of 4.\n" + 8*" " +
@@ -43,3 +43,12 @@ strchunks = [strvar[i:i+4] for i in range(0, len(strvar), 4)]
 for chunk in strchunks:
     chunk = binascii.hexlify(chunk.encode()) # convert letters to byte codes
     print(8*" " + "push 0x{}".format(chunk.decode('utf-8'))) # decode(..) is needed for Python 3
+
+strvar = strvar [::-1] # reverse string again
+shellcode = [ j for i in range(len(strvar)-4, -4, -4) for j in strvar[i:i+4] ]
+
+# insrert push (\x68) opcode in front of every 4 bytes
+for i in range (len(shellcode)-4, -4, -4):
+    shellcode.insert(i, "\x68")
+print("Stack saving shellcode:")
+print(8*" " + hexlify(shellcode))
