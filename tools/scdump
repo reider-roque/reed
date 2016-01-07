@@ -19,6 +19,6 @@ x_hex_shellcode=$(
     sed 's/../\\x&/g'   # Insert \x in front of every 2 chars
 )   
 
-echo "Length:  $(printf $shellcode | wc -c)"
+echo "Length:  $(printf $x_hex_shellcode | wc -c)"
 echo "Shellcode(x-hex): \"$x_hex_shellcode\""
 echo "Shellcode(hex):   \"$hex_shellcode\""
