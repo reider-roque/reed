@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Author: phillips321.co.uk
+# Version: 0.1
+# Source: https://www.phillips321.co.uk/2015/01/23/quickly-finding-strings-in-process-memory-space/
+# Dependencies: gdb
+
+
+# Fix for loop using whole line
+OLDIFS=${IFS}
+IFS='
+'
+if [[ $# != 2 ]] ; then
+    echo '[+] usage: $0 processname string'
+    echo "[+] example: $0 gedit "Hello World""
+    exit 1
+fi
+
+# Find process id for process
+if pid=`pgrep $1` ; then
+    echo "[+] Process ${1} identified as pid ${pid}"
+else
+    echo "[+] Process not found, try pgrep ${1} yourself"
+    exit 1
+fi
+
+# create folder and go inside it
+mkdir -p "${1}-${pid}"
+cd ${1}-${pid}
+
+# copy process maps in order to identify memory addresses
+cp /proc/${pid}/maps .
+
+# loop through memory locations using gdb and dump memory to file
+for line in `cat maps`
+do
+    echo "[+] Now working on ${line}"
+    start=`echo -n ${line} | sed -n 's/^\([0-9a-f]*\)-\([0-9a-f]*\) .*$/\1 \2/p' | cut -d" " -f1` #mem start location
+    stop=`echo -n ${line} | sed -n 's/^\([0-9a-f]*\)-\([0-9a-f]*\) .*$/\1 \2/p' | cut -d" " -f2` #mem end location
+    gdb -q -silent -batch -pid ${pid} -ex "dump memory ${pid}-${start}-${stop}.dump 0x${start} 0x${stop}"
+done
+
+
+# look for string in dumps
+if [[ ${2} != "" ]] ; then
+    string=${2}
+    echo "[+] Looking for ${string} in dump files"
+    if result=`grep ${string} *.dump` ; then
+        for line in ${result}
+        do
+            filename=`echo -n ${line} | cut -d' ' -f3`
+            echo "[+] Found in ${filename} - Creating ${filename}.txt"
+            cat ${filename} | tr '[\000-\011\013-\037\177-\377]' '.' | egrep -n --color ${2} > ${filename}.txt
+        done
+    else
+        echo "[+] String not found :-("
+    fi
+fi
+
+cd ..
+IFS=${OLDIFS}
